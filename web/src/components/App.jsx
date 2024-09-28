@@ -65,7 +65,7 @@ function App() {
 	return (
 		<div className="page">
 			<header>
-				<h1>Biblioteca!</h1>
+				<h1>Biblioteca:</h1>
 			</header>
 			<main className="mt-1">
 				<Routes>
