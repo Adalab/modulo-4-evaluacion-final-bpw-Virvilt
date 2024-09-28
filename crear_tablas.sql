@@ -20,6 +20,9 @@ CREATE TABLE `books` (
   KEY `books_platforms_fk_idx` (`platform_id`),
   CONSTRAINT `books_platforms_fk` FOREIGN KEY (`platform_id`) REFERENCES `platforms` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+INSERT INTO `books` (`id`, `name`, `year`, `category`, `platform_id`) VALUES 
+('1', 'Alicia en el país de las maravillas', 1908, "Aventuras", 1),
+('2', 'En el nombre de la rosa', 1968, "Misterio", 2);
 
 
 CREATE TABLE `characters` (

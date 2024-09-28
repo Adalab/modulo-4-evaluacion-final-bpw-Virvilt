@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-function CreateBook({ data, onSubmit, onInput }) {
+function CreateBook({ platformsArray, data, onSubmit, onInput }) {
 	const handleSubmit = (ev) => {
 		ev.preventDefault();
 		onSubmit();
@@ -10,12 +10,15 @@ function CreateBook({ data, onSubmit, onInput }) {
 	const handleInput = (ev) => {
 		onInput(ev.currentTarget.id, ev.currentTarget.value);
 	};
+	const handleNumber = (ev) => {
+		onInput(ev.currentTarget.id, parseInt(ev.currentTarget.value));
+	};
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<h2>Datos de la nueva mascota</h2>
+			<h2>Datos del libro</h2>
 			<div className="fields">
-				<label htmlFor="name">Nombre: </label>
+				<label htmlFor="name">Título: </label>
 				<input
 					type="text"
 					name="name"
@@ -23,38 +26,35 @@ function CreateBook({ data, onSubmit, onInput }) {
 					onInput={handleInput}
 					value={data.name}
 				/>
-				<label htmlFor="species">Especie: </label>
+				<label htmlFor="year">Año: </label>
+				<input
+					type="numeric"
+					name="year"
+					id="year"
+					onInput={handleNumber}
+					value={data.year}
+				/>
+				<label htmlFor="category">Categoría: </label>
 				<input
 					type="text"
-					name="species"
-					id="species"
+					name="category"
+					id="category"
 					onInput={handleInput}
-					value={data.species}
+					value={data.category}
 				/>
-				<label htmlFor="breed">Raza: </label>
-				<input
-					type="text"
-					name="breed"
-					id="breed"
-					onInput={handleInput}
-					value={data.breed}
-				/>
-				<label htmlFor="age">Edad: </label>
-				<input
-					type="text"
-					name="age"
-					id="age"
-					onInput={handleInput}
-					value={data.age}
-				/>
-				<label htmlFor="reg_date">Fecha registro: </label>
-				<input
-					type="date"
-					name="reg_date"
-					id="reg_date"
-					onInput={handleInput}
-					value={data.reg_date}
-				/>
+				<label htmlFor="platform">Tienda: </label>
+				<select
+					name="platform_id"
+					id="platform_id"
+					onInput={handleNumber}
+					value={data.platform_id}
+				>
+					{platformsArray.map((opcion, index) => (
+						<option key={index} value={opcion.id}>
+							{opcion.name}
+						</option>
+					))}
+				</select>
 			</div>
 
 			<button className="form__btn" onClick={handleSubmit}>
@@ -68,12 +68,12 @@ function CreateBook({ data, onSubmit, onInput }) {
 }
 
 CreateBook.propTypes = {
+	platformsArray: PropTypes.array,
 	data: PropTypes.shape({
-		name: PropTypes.string.isRequired,
-		species: PropTypes.string.isRequired,
-		image: PropTypes.string.isRequired,
-		desc: PropTypes.string.isRequired,
-		reg_date: PropTypes.string.isRequired,
+		name: PropTypes.string,
+		year: PropTypes.number,
+		category: PropTypes.string,
+		platform: PropTypes.number,
 	}).isRequired,
 	onSubmit: PropTypes.func.isRequired,
 	onInput: PropTypes.func.isRequired,

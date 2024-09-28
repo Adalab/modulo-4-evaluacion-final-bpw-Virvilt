@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
+require("dotenv").config();
 
 // Crear el servidor
 const server = express();
@@ -25,11 +26,11 @@ server.get("/", (req, res) => {
 async function getConnection() {
 	try {
 		const conn = await mysql.createConnection({
-			host: "localhost",
+			host: process.env.DATABASE_HOST,
 			port: 3306,
-			user: "root",
-			password: "Virvil30",
-			database: "mod4_final_virvil",
+			user: process.env.DATABASE_USER,
+			password: process.env.DATABASE_PASSWORD,
+			database: process.env.DATABASE_NAME,
 		});
 
 		await conn.connect();
@@ -52,7 +53,6 @@ server.get("/api/platforms", async (req, res) => {
 	res.json(results);
 	conn.close();
 });
-
 server.get("/api/books", async (req, res) => {
 	const conn = await getConnection();
 	if (!conn) {
@@ -63,28 +63,76 @@ server.get("/api/books", async (req, res) => {
 	res.json(results);
 	conn.close();
 });
-
 server.post("/api/books", async (req, res) => {
 	const conn = await getConnection();
 	if (!conn) {
 		res.status(500).send("Se rompió");
 		return;
 	}
-
-	console.log(req.body);
-
 	const [results, columns] = await conn.execute(
-		`INSERT INTO books (name, type, reg_date, breed, age)
-      VALUES (?, ?, ?, ?, ?)`,
+		`INSERT INTO books (name, category, year, platform_id)
+	    VALUES (?, ?, ?, ?)`,
 		[req.body.name, req.body.category, req.body.year, req.body.platform_id]
 	);
-
-	console.log(results);
-
 	res.json({
 		success: true,
 		id: results.insertId,
 	});
 
 	conn.close();
+});
+
+server.put("/api/books/:id", async (req, res) => {
+	console.log(req.body);
+	console.log(req.params);
+	const conn = await getConnection();
+	if (!conn) {
+		res.status(500).send("Se rompió");
+		return;
+	}
+	const [results] = await conn.execute(
+		`UPDATE books
+      SET name=?, year=?, category=?, platform_id=?
+      WHERE id=?`,
+		[
+			req.body.name,
+			req.body.year,
+			req.body.category,
+			req.body.platform_id,
+			req.params.id,
+		]
+	);
+	if (results.changedRows === 1) {
+		res.json({
+			success: true,
+		});
+	} else {
+		res.json({
+			success: false,
+		});
+	}
+});
+
+server.delete("/api/books/:id", async (req, res) => {
+	console.log(req.body);
+	console.log(req.params);
+	const conn = await getConnection();
+	if (!conn) {
+		res.status(500).send("Se rompió");
+		return;
+	}
+	const [results] = await conn.execute(
+		`DELETE FROM books
+      WHERE id=?`,
+		[req.params.id]
+	);
+	if (results.affectedRows === 1) {
+		res.json({
+			success: true,
+		});
+	} else {
+		res.json({
+			success: false,
+		});
+	}
 });

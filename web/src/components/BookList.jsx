@@ -34,7 +34,7 @@ function BookList({ booksArray, platformsArray }) {
 
 BookList.propTypes = {
 	booksArray: PropTypes.array,
-	platformsArray: PropTypes.array.isRequired,
+	platformsArray: PropTypes.array,
 };
 
 export default BookList;
